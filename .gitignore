@@ -1,0 +1,112 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+backend/venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+.tox/
+.nox/
+
+# Database
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# ML Models
+models/*.keras
+models/*.pkl
+models/*.h5
+models/*.joblib
+models/*.model
+
+# Data files
+data/*.db
+data/*.csv
+data/*.json
+data/*.xlsx
+data/*.parquet
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+
+# Node / Frontend
+node_modules/
+dist/
+dist-ssr/
+*.local
+.npm
+.eslintcache
+.vite-temp/
+.turbo/
+.cache/
+*.tsbuildinfo
+
+# Logs
+*.log
+logs/
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.iml
+.fleet/
+*.sublime-project
+*.sublime-workspace
+
+# Docker
+.dockerignore
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Redis
+dump.rdb
+
+# Testing
+coverage/
+.nyc_output/
+.coverage.*
+
+# Build artifacts
+build/
+out/
+
+# Keep directories but ignore contents
+data/*
+!data/.gitkeep
+models/*
+!models/.gitkeep
+
+# API Keys and secrets (extra safety)
+*.key
+*.pem
+*.p12
+secrets/

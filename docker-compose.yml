@@ -1,0 +1,64 @@
+services:
+  redis:
+    image: redis
+    container_name: stock-dashboard-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - stock-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: stock-dashboard-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ALPHA_VANTAGE_API_KEY=${ALPHA_VANTAGE_API_KEY}
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=sqlite:///./data/stocks.db
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./backend:/app/backend
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - stock-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sqlite-web:
+    image: coleifer/sqlite-web
+    container_name: stock-dashboard-sqlite-web
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+    command: ["-H", "0.0.0.0", "-x", "/data/stocks.db"]
+    networks:
+      - stock-network
+    restart: unless-stopped
+    profiles:
+      - tools
+
+volumes:
+  redis-data:
+
+networks:
+  stock-network:
+    driver: bridge
