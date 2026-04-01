@@ -134,7 +134,7 @@ const HeatmapPageComponent: React.FC = () => {
               <div className="text-center">
                 <div className="inline-block animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-4 border-blue-600 mb-4"></div>
                 <p className="text-gray-600 text-base sm:text-lg font-medium">Computing correlation matrix...</p>
-                <p className="text-gray-500 text-xs sm:text-sm mt-2">Analyzing relationships between {data?.symbols?.length || '15'} stocks</p>
+                <p className="text-gray-500 text-xs sm:text-sm mt-2">Analyzing relationships between stocks...</p>
               </div>
             </div>
           ) : error ? (
@@ -313,14 +313,14 @@ const HeatmapPageComponent: React.FC = () => {
                           </tr>
                         </thead>
                         <tbody>
-                            {(searchTerm ? filteredSymbols : data.symbols).map((symbol1, displayRowIndex) => {
+                            {(searchTerm ? filteredSymbols : data.symbols).map((symbol1) => {
                               const rowIndex = data.symbols.indexOf(symbol1);
                               return (
                                 <tr key={rowIndex}>
                                   <td className="p-1 md:p-2 border-2 border-gray-400 bg-gradient-to-br from-gray-100 to-gray-200 font-bold text-gray-900 text-right text-[8px] md:text-[10px] lg:text-xs w-8 md:w-12 lg:w-16 h-8 md:h-12 lg:h-16">
                                     {symbol1}
                                   </td>
-                                  {(searchTerm ? filteredSymbols : data.symbols).map((symbol2, displayColIndex) => {
+                                  {(searchTerm ? filteredSymbols : data.symbols).map((symbol2) => {
                                     const colIndex = data.symbols.indexOf(symbol2);
                                     const value = data.matrix[rowIndex][colIndex];
                                     const meetsThreshold = Math.abs(value) >= Math.abs(filterThreshold);
