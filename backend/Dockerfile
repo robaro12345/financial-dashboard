@@ -18,7 +18,7 @@ COPY models/ ./models/
 RUN mkdir -p ./data
 
 # Expose port
-EXPOSE 8000
+EXPOSE ${PORT:-8000}
 
-# Run the application using the injected PORT env var or defaulting to 8000
-CMD sh -c "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}"
+# Run the application
+CMD uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}
