@@ -7,7 +7,12 @@ import os
 # Load environment variables
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/stocks.db")
+# Determine the absolute path to the backend data directory to ensure SQLite binds correctly in Docker
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
+
+DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{os.path.join(DATA_DIR, 'stocks.db')}")
 
 # Create SQLAlchemy engine
 engine = create_engine(
