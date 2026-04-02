@@ -17,8 +17,11 @@ COPY backend/ ./backend/
 COPY models/ ./models/
 RUN mkdir -p ./data
 
-# Expose port (Documentation only, Railway does this dynamically)
-EXPOSE 8000
+# Set default PORT environment variable
+ENV PORT=8000
 
-# Run the application directly using the Python file
-CMD ["python", "-m", "backend.main"]
+# Expose port (Documentation only, Railway dynamically maps this)
+EXPOSE $PORT
+
+# Run the application directly using uvicorn and mapping the port
+CMD ["sh", "-c", "uvicorn backend.main:app --host 0.0.0.0 --port $PORT"]
