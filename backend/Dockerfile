@@ -9,14 +9,13 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install Python dependencies
-COPY requirements.txt .
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY . .
-
-# Create necessary directories
-RUN mkdir -p /app/data /app/models
+COPY backend/ ./backend/
+COPY models/ ./models/
+RUN mkdir -p ./data
 
 # Expose port
 EXPOSE 8000
