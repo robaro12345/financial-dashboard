@@ -3,6 +3,7 @@ import { lazy, Suspense, useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './components/Dashboard';
 import HeatmapPage from './components/HeatmapPage';
+import { refreshData } from './api/client';
 
 // Lazy load heavy components
 const ComparePage = lazy(() => import('./components/ComparePage'));
@@ -23,6 +24,20 @@ function LoadingFallback() {
 function Navigation() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    try {
+      setIsRefreshing(true);
+      await refreshData();
+      window.location.reload(); // Reload to fetch fresh data
+    } catch (error) {
+      console.error('Failed to refresh data:', error);
+      alert('Failed to refresh data. Ensure your API key is correctly configured in Settings.');
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -45,7 +60,21 @@ function Navigation() {
         </Link>
         
         {/* Desktop Navigation */}
-        <div className="hidden lg:flex gap-2">
+        <div className="hidden lg:flex gap-2 items-center">
+          <button
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className={`px-4 xl:px-5 py-2.5 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 text-sm xl:text-base flex items-center gap-1 ${
+              isRefreshing 
+                ? 'bg-gray-400 text-white cursor-not-allowed' 
+                : 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg hover:from-green-600 hover:to-green-700'
+            }`}
+          >
+            {isRefreshing ? (
+              <span className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+            ) : '🔄'} Refresh
+          </button>
+          
           {navLinks.map(({ path, label }) => (
             <Link
               key={path}
@@ -76,6 +105,20 @@ function Navigation() {
       {isMobileMenuOpen && (
         <div className="lg:hidden mt-3 pt-3 border-t border-gray-200">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <button
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className={`col-span-2 sm:col-span-3 px-3 py-2 rounded-lg font-semibold transition-all duration-200 text-sm text-center flex justify-center items-center gap-2 ${
+                isRefreshing 
+                  ? 'bg-gray-400 text-white cursor-not-allowed' 
+                  : 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg'
+              }`}
+            >
+              {isRefreshing ? (
+                <span className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+              ) : '🔄'} {isRefreshing ? 'Refreshing...' : 'Refresh Data'}
+            </button>
+
             {navLinks.map(({ path, label, mobileLabel }) => (
               <Link
                 key={path}
