@@ -29,11 +29,24 @@ const ComparePageComponent: React.FC = () => {
 
   const chartData = useMemo(() => {
     if (!data) return [];
-    return data.symbol1_data.map((item, index) => ({
-      date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      [symbol1]: item.normalized_price,
-      [symbol2]: data.symbol2_data[index]?.normalized_price,
-    }));
+    
+    const dateMap = new Map<string, any>();
+    
+    data.symbol1_data.forEach(item => {
+      const dateStr = item.date;
+      if (!dateMap.has(dateStr)) dateMap.set(dateStr, { date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) });
+      dateMap.get(dateStr)![symbol1] = item.normalized_price;
+    });
+
+    data.symbol2_data.forEach(item => {
+      const dateStr = item.date;
+      if (!dateMap.has(dateStr)) dateMap.set(dateStr, { date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) });
+      dateMap.get(dateStr)![symbol2] = item.normalized_price;
+    });
+    
+    return Array.from(dateMap.entries())
+      .sort((a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime())
+      .map(entry => entry[1]);
   }, [data, symbol1, symbol2]);
 
   const CustomTooltip = ({ active, payload }: any) => {
@@ -47,7 +60,7 @@ const ComparePageComponent: React.FC = () => {
                 <span className="font-semibold" style={{ color: entry.color }}>
                   {entry.name}:{' '}
                 </span>
-                <span className="text-gray-900">{entry.value.toFixed(2)}</span>
+                <span className="text-gray-900">{entry.value?.toFixed(2)}</span>
               </p>
             ))}
           </div>
