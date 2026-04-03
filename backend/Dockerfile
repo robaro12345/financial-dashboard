@@ -9,6 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ ./backend/
 COPY models/ ./models/
+RUN mkdir -p ./data
 
 ENV PORT=8000
 ENV PYTHONPATH=/app
